@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Веб-программирование · ЛР1</title>
+    <style>
+      /* Theme */
+      :root {
+        --bg: #ffFAFA;
+        --panel: #fff3f5;
+        --fg: #312b2b;
+        --muted: #6f5d5f;
+        --accent: #d16b8f;
+        --accent-strong: #b44d74;
+        --hit: #2ecc71;
+        --miss: #c62828;
+        --border: #f0d9dd;
+        --tick: #c7aeb3;
+        --axis: #4a3f40;
+      }
+
+      /* Base */
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      }
+
+      /* Header (explicit sans-serif font per task) */
+      #page-header {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        font-family: sans-serif;
+        color: var(--fg);
+        font-size: 16px;
+      }
+      #page-header h1 {
+        margin: 0;
+        font-weight: 650;
+        font-size: 20px;
+        color: var(--axis);
+      }
+      #page-header .student {
+        margin-top: 4px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      /* Layout */
+      #layout { display: grid; grid-template-columns: 380px 1fr; gap: 16px; padding: 16px; }
+      #controls,
+      #plot {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px;
+        box-shadow: 0 6px 18px rgba(209, 107, 143, 0.08);
+      }
+      h2 {
+        margin: 0 0 10px;
+        font-size: 16px;
+      }
+
+      /* Form */
+      .field { margin-bottom: 10px; }
+      .field label { display: block; font-weight: 600; margin-bottom: 6px; }
+
+      /* Descendant selector example per task */
+      #controls .field input { font-variant-numeric: tabular-nums; }
+
+      /* Buttons (uniform) */
+      .btn {
+        padding: 8px 10px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: #fff7f8;
+        color: var(--fg);
+        cursor: pointer;
+        transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.1s ease;
+      }
+      .btn:hover {
+        border-color: var(--accent);
+        box-shadow: 0 3px 10px rgba(209, 107, 143, 0.18);
+        transform: translateY(-1px);
+      }
+      .btn:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      /* X buttons grid */
+      #x-buttons { display: grid; grid-template-columns: repeat(9, 1fr); gap: 6px; }
+      #x-buttons button.selected { background: var(--accent); border-color: var(--accent-strong); color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2); }
+
+      /* Inputs (px margins as required) */
+      #y, #r, #submit, #random { margin: 6px 0; }
+      #y, #r {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: #fff7f8;
+        color: var(--fg);
+        font-size: 15px;
+        line-height: 1.4;
+        caret-color: var(--accent);
+        box-sizing: border-box; /* prevent overflow beyond container */
+      }
+      /* Tidy custom arrow for R select */
+      #r {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        padding-right: 36px; /* room for arrow */
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 14px 14px;
+      }
+      #y::placeholder { color: #a58d91; }
+      #y:focus, #r:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(209,107,143,.18); }
+
+      .actions { display: flex; gap: 8px; }
+
+      /* Errors (no decorative dot) */
+      #errors { min-height: 20px; color: #a74a3f; margin-top: 6px; }
+
+      /* Plot */
+      #plot canvas {
+        width: 640px; /* visual size */
+        height: 640px;
+        display: block;
+        margin: 0 auto;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fffdfd;
+      }
+      #plot .legend { font-size: 12px; color: var(--muted); margin-top: 6px; text-align: center; }
+
+      /* Pseudo-element example per task */
+      #page-header h1::after {
+        content: " · ЛР1";
+        color: var(--accent);
+        font-weight: 400;
+      }
+
+      /* Results table */
+      #results { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin: 0 16px 16px 16px; box-shadow: 0 6px 18px rgba(49, 43, 43, 0.04); }
+      #results table { width: 100%; border-collapse: collapse; font-size: 14px; color: var(--fg); }
+      #results th, #results td { padding: 8px; border-bottom: 1px solid var(--border); text-align: left; }
+      #results th { color: var(--accent-strong); font-weight: 600; }
+      #results .ok { color: var(--hit); font-weight: 600; }
+      #results .fail { color: var(--miss); font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <header id="page-header">
+      <h1>Веб-программирование</h1>
+      <div class="student"><span id="student-name">Седов Даниил Борисович</span> • <span id="student-group">P3216</span> • <span id="variant">409529</span></div>
+    </header>
+
+    <main id="layout">
+      <section id="controls" aria-labelledby="controls-title">
+        <h2 id="controls-title">Ввод данных</h2>
+        <form id="hit-form" method="get" action="/api/check">
+          <div class="field" id="field-x">
+            <label for="x-buttons">X:</label>
+            <div id="x-buttons" role="group" aria-label="X">
+              <!-- -5..3 inclusive -->
+              <button class="btn" type="button" data-x="-5">-5</button>
+              <button class="btn" type="button" data-x="-4">-4</button>
+              <button class="btn" type="button" data-x="-3">-3</button>
+              <button class="btn" type="button" data-x="-2">-2</button>
+              <button class="btn" type="button" data-x="-1">-1</button>
+              <button class="btn" type="button" data-x="0">0</button>
+              <button class="btn" type="button" data-x="1">1</button>
+              <button class="btn" type="button" data-x="2">2</button>
+              <button class="btn" type="button" data-x="3">3</button>
+            </div>
+            <input type="hidden" id="x" name="x" />
+          </div>
+
+          <div class="field" id="field-y">
+            <label for="y">Y:</label>
+            <input id="y" name="y" type="text" inputmode="decimal" placeholder="от -3 до 3" />
+          </div>
+
+          <div class="field" id="field-r">
+            <label for="r">R:</label>
+            <select id="r" name="r">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+
+          <div class="actions">
+            <button class="btn" id="submit" type="submit">Проверить</button>
+            <button class="btn" id="random" type="button">Случайная точка</button>
+          </div>
+
+          <div id="errors" aria-live="polite"></div>
+        </form>
+      </section>
+
+      <section id="plot" aria-labelledby="plot-title">
+        <h2 id="plot-title">График области</h2>
+        <canvas id="plot-canvas" width="640" height="640"></canvas>
+        <div class="legend">Мы показываем область для выбранного R и последнюю проверенную точку. Масштаб фиксирован.</div>
+      </section>
+    </main>
+
+    <section id="results" aria-labelledby="results-title">
+      <h2 id="results-title">Таблица результатов</h2>
+      <table id="results-table" aria-describedby="results-title">
+        <thead>
+          <tr>
+            <th>X</th>
+            <th>Y</th>
+            <th>R</th>
+            <th>Попадание</th>
+            <th>Время</th>
+            <th>Выполнение, мс</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </section>
+
+    <script src="main.js"></script>
+  </body>
+  </html>

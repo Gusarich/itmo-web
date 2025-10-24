@@ -1,0 +1,32 @@
+# macOS
+.DS_Store
+
+# Gradle/Java
+.gradle/
+build/
+**/build/
+out/
+bin/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Logs and dumps
+*.log
+hs_err_pid*
+replay_pid*
+*.hprof
+*.dump
+com_fastcgi_FCGIInterface.dump
+
+# Editor temps
+*.swp
+*.swo
+*.tmp
+
+# VS Code (optional)
+.vscode/
+
+# Keep JARs that are part of the repo (e.g., Gradle wrapper, libs)
+# Do NOT add a global *.jar ignore here.
