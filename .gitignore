@@ -3,6 +3,7 @@
 
 # Gradle/Java
 .gradle/
+.gradle-cache/
 build/
 **/build/
 out/
